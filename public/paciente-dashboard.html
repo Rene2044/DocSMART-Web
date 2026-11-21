@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocSMART | Mi Portal de Salud - Paciente</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        docblue: '#0A4D68',
+                        docteal: '#088395',
+                        doccyan: '#05BFDB',
+                        docbg: '#F4F6F9'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F4F6F9;
+            color: #1E293B;
+        }
+        .bg-gradient-brand {
+            background: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
+        }
+        .bg-gradient-accent {
+            background: linear-gradient(135deg, #088395 0%, #05BFDB 100%);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F4F6F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #088395;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#05BFDB] selection:text-white flex h-screen overflow-hidden">
+
+    <!-- ================= SIDEBAR NAVIGATION ================= -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-docblue text-white flex flex-col justify-between transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static shrink-0 shadow-2xl">
+        
+        <div>
+            <!-- Brand Header -->
+            <div class="h-20 px-6 flex items-center justify-between border-b border-white/10">
+                <a href="DocSMART.html" class="flex items-center gap-3 group">
+                    <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-accent text-white shadow-md">
+                        <i data-lucide="activity" class="w-5 h-5 stroke-[2.5]"></i>
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-doccyan rounded-full border-2 border-docblue"></span>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="flex items-center">
+                            <span class="text-xl font-black text-white tracking-tight">Doc</span>
+                            <span class="text-xl font-black text-doccyan tracking-tight">SMART</span>
+                        </div>
+                        <span class="text-[9px] font-bold text-slate-300 uppercase tracking-widest -mt-1">
+                            Portal del Paciente
+                        </span>
+                    </div>
+                </a>
+                <button onclick="toggleSidebar()" class="lg:hidden text-slate-300 hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Patient Profile Card -->
+            <div class="p-5 border-b border-white/10 bg-white/5">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-full bg-gradient-accent text-white font-bold flex items-center justify-center text-sm border-2 border-doccyan shrink-0">
+                        MR
+                    </div>
+                    <div class="overflow-hidden">
+                        <h4 class="font-bold text-sm text-white truncate">María Fernanda Rivas</h4>
+                        <p class="text-xs text-doccyan font-medium truncate">ID: #DOC-8941 • Grupo O+</p>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-[11px] bg-docblue/80 px-3 py-1.5 rounded-lg border border-white/10">
+                    <span class="text-slate-300">Expediente Clínico:</span>
+                    <span class="font-bold text-emerald-400 flex items-center gap-1">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Verificado
+                    </span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-4 space-y-1.5 text-sm font-semibold">
+                <button onclick="switchSection('resumen')" data-nav="resumen" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-docteal text-white shadow-md transition-all">
+                    <i data-lucide="heart-pulse" class="w-5 h-5"></i>
+                    <span>Mi Resumen y Citas</span>
+                </button>
+
+                <button onclick="switchSection('historial')" data-nav="historial" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                    <span>Historial Clínico</span>
+                </button>
+
+                <button onclick="switchSection('anexo')" data-nav="anexo" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="file-plus" class="w-5 h-5"></i>
+                        <span>Anexo de Salud</span>
+                    </div>
+                    <span class="bg-doccyan/20 text-doccyan text-[10px] font-bold px-2 py-0.5 rounded-full border border-doccyan/30">Editable</span>
+                </button>
+
+                <button onclick="switchSection('recetas')" data-nav="recetas" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="pill" class="w-5 h-5"></i>
+                        <span>Recetas Médicas</span>
+                    </div>
+                    <span class="bg-emerald-500 text-white text-[11px] font-extrabold px-2 py-0.5 rounded-full">2</span>
+                </button>
+
+                <button onclick="switchSection('examenes')" data-nav="examenes" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <i data-lucide="flask-conical" class="w-5 h-5"></i>
+                    <span>Mis Exámenes</span>
+                </button>
+
+                <button onclick="switchSection('referencias')" data-nav="referencias" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="share-2" class="w-5 h-5"></i>
+                        <span>Referencias Médicas</span>
+                    </div>
+                    <span class="bg-amber-400 text-docblue text-[11px] font-extrabold px-2 py-0.5 rounded-full">1</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Bottom Emergency & Logout -->
+        <div class="p-4 border-t border-white/10 space-y-2.5">
+            <button onclick="openEmergencyCardModal()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-200 hover:text-docblue text-xs font-extrabold border border-amber-400/30 transition-all">
+                <i data-lucide="id-card" class="w-4 h-4"></i>
+                <span>Ficha Médica de Emergencia</span>
+            </button>
+            <a href="DocSMART.html" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-500/15 hover:bg-red-500 text-red-200 hover:text-white text-xs font-bold transition-all">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ================= MAIN WORKSPACE ================= -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+        <!-- Top Navbar -->
+        <header class="h-20 bg-white border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between shrink-0 z-20">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <div>
+                    <h1 id="pageTitle" class="text-xl sm:text-2xl font-black text-docblue tracking-tight">Mi Portal de Salud</h1>
+                    <p class="text-xs text-slate-500 font-medium">Bienvenida, María Fernanda • Expediente #DOC-8941</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="openNewAppointmentModal()" class="px-4 py-2.5 bg-gradient-accent hover:from-docblue hover:to-docteal text-white text-xs sm:text-sm font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+                    <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+                    <span>Agendar Cita</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Scrollable Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-8 space-y-8">
+
+            <!-- =========================================================
+                 1. SECCIÓN: RESUMEN Y PRÓXIMAS CITAS
+            ========================================================= -->
+            <section id="sec-resumen" class="space-y-6">
+                
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Próxima Cita</p>
+                            <p class="text-xl font-black text-docblue mt-1">Mañana, 10:30 AM</p>
+                            <p class="text-xs text-docteal font-semibold mt-1">Dr. Alejandro Mendoza</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-docblue/10 text-docblue flex items-center justify-center">
+                            <i data-lucide="calendar" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Recetas Activas</p>
+                            <p class="text-3xl font-black text-emerald-600 mt-1">2</p>
+                            <p class="text-xs text-slate-500 font-semibold mt-1">Con QR listo para farmacia</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <i data-lucide="pill" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Exámenes Subidos</p>
+                            <p class="text-3xl font-black text-docteal mt-1">4</p>
+                            <p class="text-xs text-slate-500 font-semibold mt-1">Último: 18 Nov 2026</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-docteal/10 text-docteal flex items-center justify-center">
+                            <i data-lucide="file-check" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Referencias Activas</p>
+                            <p class="text-3xl font-black text-amber-600 mt-1">1</p>
+                            <p class="text-xs text-amber-600 font-semibold mt-1">Especialidad: Cardiología</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                            <i data-lucide="share-2" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Grid: Próxima Teleconsulta + Resumen Clínico Rápido -->
+                <div class="grid lg:grid-cols-12 gap-6">
+                    
+                    <!-- Citas Programadas -->
+                    <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-bold text-docblue">Mis Citas Programadas</h3>
+                                <p class="text-xs text-slate-500">Consultas virtuales y presenciales activas</p>
+                            </div>
+                            <button onclick="openNewAppointmentModal()" class="text-xs font-bold text-docteal hover:text-docblue">
+                                + Nueva Cita
+                            </button>
+                        </div>
+
+                        <div id="appointmentsContainer" class="divide-y divide-slate-100">
+                            <!-- Cita 1 -->
+                            <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/70">
+                                <div class="flex items-start gap-4">
+                                    <div class="px-3 py-2 rounded-xl bg-gradient-brand text-white text-center shrink-0">
+                                        <p class="text-xs font-bold">21 NOV</p>
+                                        <p class="text-[10px] text-doccyan font-bold">10:30 AM</p>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-docblue text-base">Dr. Alejandro Mendoza</h4>
+                                            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-docteal/10 text-docteal">Teleconsulta HD</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-0.5">Medicina Interna • Revisión de resultados de laboratorio</p>
+                                    </div>
+                                </div>
+                                <button onclick="openTeleconsultRoom()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 self-start sm:self-center shadow-sm">
+                                    <i data-lucide="video" class="w-3.5 h-3.5"></i> Sala Virtual
+                                </button>
+                            </div>
+
+                            <!-- Cita 2 -->
+                            <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/70">
+                                <div class="flex items-start gap-4">
+                                    <div class="px-3 py-2 rounded-xl bg-slate-100 text-slate-700 text-center shrink-0">
+                                        <p class="text-xs font-bold">04 DIC</p>
+                                        <p class="text-[10px] text-slate-500 font-bold">03:00 PM</p>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-docblue text-base">Dr. Gustavo Hernández</h4>
+                                            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-700">Por Referencia</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-0.5">Cardiología Preventiva • Clínica San José, Consultorio 4</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full self-start sm:self-center">
+                                    Confirmada
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Perfil Biológico y Accesos Rápidos -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="bg-gradient-brand rounded-3xl p-6 text-white shadow-lg space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold uppercase tracking-wider text-doccyan">Anexo del Paciente</span>
+                                <i data-lucide="heart-handshake" class="w-5 h-5 text-doccyan"></i>
+                            </div>
+                            <h4 class="text-lg font-black">¿Te diagnosticaron algo nuevo o tomas otro medicamento?</h4>
+                            <p class="text-xs text-slate-200 leading-relaxed">
+                                Mantén actualizado tu anexo personal de enfermedades, alergias y cirugías para que tu médico lo vea al instante antes de atenderte.
+                            </p>
+                            <button onclick="switchSection('anexo')" class="w-full py-2.5 bg-doccyan hover:bg-white text-docblue font-extrabold rounded-xl text-xs transition-colors">
+                                Actualizar Mi Anexo de Salud →
+                            </button>
+                        </div>
+
+                        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-3">
+                            <h4 class="font-bold text-docblue text-sm uppercase tracking-wider">Datos Clínicos Base</h4>
+                            <div class="grid grid-cols-2 gap-3 text-xs">
+                                <div class="p-3 rounded-xl bg-docbg">
+                                    <span class="text-slate-500 block">Tipo de Sangre</span>
+                                    <strong class="text-docblue text-base font-black">O Positivo (O+)</strong>
+                                </div>
+                                <div class="p-3 rounded-xl bg-red-50 border border-red-100">
+                                    <span class="text-red-600 block font-semibold">Alergias Alertadas</span>
+                                    <strong class="text-red-800 text-sm font-bold">Penicilina</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- =========================================================
+                 2. SECCIÓN: HISTORIAL CLÍNICO COMPLETO
+            ========================================================= -->
+            <section id="sec-historial" class="hidden space-y-6">
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-8 space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                        <div>
+                            <h3 class="text-xl font-black text-docblue">Historial Clínico Unificado</h3>
+                            <p class="text-xs text-slate-500">Registro cronológico de atenciones médicas, diagnósticos y evolución</p>
+                        </div>
+                        <button onclick="showToast('Descargando resumen de historial clínico en PDF certificado...')" class="px-4 py-2.5 bg-docblue hover:bg-docteal text-white text-xs font-bold rounded-xl flex items-center gap-2 self-start">
+                            <i data-lucide="download" class="w-4 h-4"></i> Descargar Expediente PDF
+                        </button>
+                    </div>
+
+                    <!-- Timeline de Consultas -->
+                    <div class="space-y-4">
+                        <div class="p-5 rounded-2xl bg-docbg border border-slate-200/80 space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-1 rounded-lg bg-docblue text-white text-xs font-bold">15 Oct 2026</span>
+                                    <h4 class="font-bold text-docblue text-base">Consulta de Medicina Interna</h4>
+                                </div>
+                                <span class="text-xs font-semibold text-docteal">Dr. Alejandro Mendoza • JVPM #8920</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-700">Diagnóstico: Control preventivo y evaluación cardiovascular leve</p>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Paciente acude por chequeo general y episodios leves de fatiga. Signos vitales estables (PA 118/76 mmHg, FC 72 lpm). Se indican exámenes de laboratorio (Hemograma y Perfil Tiroideo) y referencia preventiva a Cardiología.
+                            </p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-docbg border border-slate-200/80 space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-1 rounded-lg bg-slate-700 text-white text-xs font-bold">12 Jul 2026</span>
+                                    <h4 class="font-bold text-docblue text-base">Teleconsulta Respiratoria</h4>
+                                </div>
+                                <span class="text-xs font-semibold text-docteal">Dra. Elena Ramos • Medicina General</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-700">Diagnóstico: Rinitis alérgica estacional (J30.4)</p>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Congestión nasal y estornudos matutinos sin fiebre. Se prescribe antihistamínico oral por 10 días y lavados nasales con solución salina. Evolución favorable.
+                            </p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-docbg border border-slate-200/80 space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-1 rounded-lg bg-slate-700 text-white text-xs font-bold">19 Feb 2026</span>
+                                    <h4 class="font-bold text-docblue text-base">Consulta Dermatológica</h4>
+                                </div>
+                                <span class="text-xs font-semibold text-docteal">Dra. Lucía Morales • Dermatología</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-700">Diagnóstico: Dermatitis de contacto leve</p>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Irritación localizada en antebrazo derecho. Se indica crema emoliente hipoalergénica y evitar jabones perfumados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========================================================
+                 3. SECCIÓN: ANEXO PERSONAL DE ENFERMEDADES Y ANTECEDENTES
+            ========================================================= -->
+            <section id="sec-anexo" class="hidden space-y-6">
+                <div class="grid lg:grid-cols-12 gap-6">
+                    
+                    <!-- Formulario para agregar enfermedad / condición -->
+                    <form onsubmit="addHealthCondition(event)" class="lg:col-span-5 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-8 space-y-4 h-fit">
+                        <div class="border-b border-slate-100 pb-4">
+                            <div class="inline-flex items-center gap-1.5 text-docteal text-xs font-bold uppercase">
+                                <i data-lucide="file-plus" class="w-4 h-4"></i> Declaración del Paciente
+                            </div>
+                            <h3 class="text-xl font-black text-docblue mt-1">Agregar Condición o Enfermedad</h3>
+                            <p class="text-xs text-slate-500 mt-1">Esta información se sincroniza directamente con tu médico tratante.</p>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 uppercase">Tipo de Registro</label>
+                            <select id="condCategory" class="mt-1 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-800 focus:outline-none focus:border-docteal">
+                                <option value="Enfermedad Crónica / Diagnosticada">Enfermedad Crónica / Diagnosticada</option>
+                                <option value="Alergia a Medicamento o Alimento">Alergia a Medicamento o Alimento</option>
+                                <option value="Cirugía u Hospitalización Previa">Cirugía u Hospitalización Previa</option>
+                                <option value="Medicamento de Uso Habitual">Medicamento de Uso Habitual</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 uppercase">Nombre de la Enfermedad / Condición</label>
+                            <input type="text" id="condName" placeholder="Ej. Asma leve, Gastritis, Alergia a mariscos..." required class="mt-1 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-docteal">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-xs font-bold text-slate-700 uppercase">Año / Fecha aprox.</label>
+                                <input type="text" id="condYear" placeholder="Ej. 2024" required class="mt-1 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-docteal">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-700 uppercase">Estado Actual</label>
+                                <select id="condStatus" class="mt-1 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-800 focus:outline-none focus:border-docteal">
+                                    <option value="Activa / En tratamiento">Activa / En tratamiento</option>
+                                    <option value="Controlada">Controlada</option>
+                                    <option value="Superada / Antecedente">Superada / Antecedente</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 uppercase">Detalles o Tratamiento Actual</label>
+                            <textarea id="condNotes" rows="3" placeholder="Indica si tomas algún medicamento para esto o síntomas frecuentes..." class="mt-1 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-docteal"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-gradient-accent hover:from-docblue hover:to-docteal text-white font-extrabold rounded-xl shadow-md text-sm flex items-center justify-center gap-2 transition-all">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>Añadir a Mi Anexo Clínico</span>
+                        </button>
+                    </form>
+
+                    <!-- Lista de Condiciones Registradas por el Paciente -->
+                    <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-8 space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-docblue">Mi Anexo de Salud Declarado</h3>
+                                <p class="text-xs text-slate-500">Visible para los médicos que autorices en tus consultas</p>
+                            </div>
+                            <span id="conditionsCounter" class="px-3 py-1 rounded-full bg-docblue/10 text-docblue text-xs font-bold">3 Registros</span>
+                        </div>
+
+                        <div id="patientConditionsList" class="space-y-3">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- =========================================================
+                 4. SECCIÓN: RECETAS MÉDICAS DIGITALES
+            ========================================================= -->
+            <section id="sec-recetas" class="hidden space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    
+                    <!-- Receta 1 -->
+                    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                                <div>
+                                    <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold">Vigente • QR Activo</span>
+                                    <h4 class="font-black text-docblue text-lg mt-2">Folio #RX-8841</h4>
+                                    <p class="text-xs text-slate-500">Emitida: 15 Oct 2026 • Dr. Alejandro Mendoza</p>
+                                </div>
+                                <div class="p-3 rounded-2xl bg-docbg border border-slate-200 text-docblue">
+                                    <i data-lucide="qr-code" class="w-10 h-10"></i>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2.5 text-xs">
+                                <div class="p-3.5 rounded-2xl bg-docbg border border-slate-200/60">
+                                    <p class="font-bold text-docblue text-sm">1. Loratadina 10 mg (Tabletas)</p>
+                                    <p class="text-slate-600 mt-1"><strong>Indicaciones:</strong> Tomar 1 tableta vía oral cada 24 horas por 10 días.</p>
+                                </div>
+                                <div class="p-3.5 rounded-2xl bg-docbg border border-slate-200/60">
+                                    <p class="font-bold text-docblue text-sm">2. Vitamina D3 2000 UI (Cápsulas)</p>
+                                    <p class="text-slate-600 mt-1"><strong>Indicaciones:</strong> Tomar 1 cápsula diaria junto con el desayuno por 30 días.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                            <span class="text-[11px] text-slate-400 font-medium">Firma Electrónica Validada</span>
+                            <button onclick="showToast('Descargando Receta #RX-8841 en PDF con Código QR...')" class="px-4 py-2 bg-docblue hover:bg-docteal text-white text-xs font-bold rounded-xl flex items-center gap-1.5">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> Descargar PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Receta 2 -->
+                    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                                <div>
+                                    <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold">Vigente • QR Activo</span>
+                                    <h4 class="font-black text-docblue text-lg mt-2">Folio #RX-8510</h4>
+                                    <p class="text-xs text-slate-500">Emitida: 19 Feb 2026 • Dra. Lucía Morales</p>
+                                </div>
+                                <div class="p-3 rounded-2xl bg-docbg border border-slate-200 text-docblue">
+                                    <i data-lucide="qr-code" class="w-10 h-10"></i>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2.5 text-xs">
+                                <div class="p-3.5 rounded-2xl bg-docbg border border-slate-200/60">
+                                    <p class="font-bold text-docblue text-sm">1. Crema Hidratante Ceramidas (Tubo 100g)</p>
+                                    <p class="text-slate-600 mt-1"><strong>Indicaciones:</strong> Aplicar capa fina en zona afectada 2 veces al día durante 14 días.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                            <span class="text-[11px] text-slate-400 font-medium">Firma Electrónica Validada</span>
+                            <button onclick="showToast('Descargando Receta #RX-8510 en PDF con Código QR...')" class="px-4 py-2 bg-docblue hover:bg-docteal text-white text-xs font-bold rounded-xl flex items-center gap-1.5">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> Descargar PDF
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- =========================================================
+                 5. SECCIÓN: EXÁMENES REALIZADOS Y SUBIDA DE ESTUDIOS
+            ========================================================= -->
+            <section id="sec-examenes" class="hidden space-y-6">
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-docblue">Mis Exámenes y Estudios de Laboratorio</h3>
+                            <p class="text-xs text-slate-500">Consulta tus resultados médicos o sube un nuevo estudio externo</p>
+                        </div>
+                        <button onclick="openUploadExamModal()" class="px-4 py-2.5 bg-docteal hover:bg-docblue text-white text-xs font-bold rounded-xl flex items-center gap-2 self-start shadow-sm">
+                            <i data-lucide="upload" class="w-4 h-4"></i> Subir Nuevo Examen
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    <th class="py-3.5 px-6">Estudio Realizado</th>
+                                    <th class="py-3.5 px-6">Laboratorio / Centro</th>
+                                    <th class="py-3.5 px-6">Fecha</th>
+                                    <th class="py-3.5 px-6">Estado Médico</th>
+                                    <th class="py-3.5 px-6 text-right">Resultado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientExamsTable" class="divide-y divide-slate-100 text-sm">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="py-4 px-6 font-bold text-docblue">Hemograma Completo</td>
+                                    <td class="py-4 px-6 text-xs text-slate-600">Laboratorio Clínico Central</td>
+                                    <td class="py-4 px-6 text-xs text-slate-500">18 Nov 2026</td>
+                                    <td class="py-4 px-6">
+                                        <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">Revisado • Normal</span>
+                                    </td>
+                                    <td class="py-4 px-6 text-right">
+                                        <button onclick="openExamDetailModal('Hemograma Completo', '18 Nov 2026', 'Hemoglobina: 13.8 g/dL (Normal). Leucocitos: 6,800 /mm³. Plaquetas: 245,000 /mm³. Comentario del Dr. Mendoza: Valores completamente normales, sin signos de anemia ni infección.')" class="px-3 py-1.5 bg-docblue text-white rounded-lg text-xs font-bold hover:bg-docteal">
+                                            Ver Resultado
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="py-4 px-6 font-bold text-docblue">Perfil Tiroideo (TSH, T3, T4)</td>
+                                    <td class="py-4 px-6 text-xs text-slate-600">Laboratorio Clínico Central</td>
+                                    <td class="py-4 px-6 text-xs text-slate-500">18 Nov 2026</td>
+                                    <td class="py-4 px-6">
+                                        <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">Revisado • Normal</span>
+                                    </td>
+                                    <td class="py-4 px-6 text-right">
+                                        <button onclick="openExamDetailModal('Perfil Tiroideo (TSH, T3, T4)', '18 Nov 2026', 'TSH: 2.15 mUI/L (Ref: 0.4 - 4.0). T4 Libre: 1.2 ng/dL. Función tiroidea óptima.')" class="px-3 py-1.5 bg-docblue text-white rounded-lg text-xs font-bold hover:bg-docteal">
+                                            Ver Resultado
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="py-4 px-6 font-bold text-docblue">Electrocardiograma de Reposo</td>
+                                    <td class="py-4 px-6 text-xs text-slate-600">Unidad Cardiovascular San José</td>
+                                    <td class="py-4 px-6 text-xs text-slate-500">20 Oct 2026</td>
+                                    <td class="py-4 px-6">
+                                        <span class="px-2.5 py-1 rounded-full bg-doccyan/20 text-docblue text-xs font-bold">Adjunto en Expediente</span>
+                                    </td>
+                                    <td class="py-4 px-6 text-right">
+                                        <button onclick="openExamDetailModal('Electrocardiograma de Reposo', '20 Oct 2026', 'Ritmo sinusal regular a 72 lpm. Eje eléctrico normal. Sin alteraciones del segmento ST.')" class="px-3 py-1.5 bg-docblue text-white rounded-lg text-xs font-bold hover:bg-docteal">
+                                            Ver Resultado
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========================================================
+                 6. SECCIÓN: REFERENCIAS MÉDICAS (INTERCONSULTAS)
+            ========================================================= -->
+            <section id="sec-referencias" class="hidden space-y-6">
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-8 space-y-6">
+                    <div class="border-b border-slate-100 pb-4">
+                        <h3 class="text-xl font-black text-docblue">Referencias y Derivaciones a Especialistas</h3>
+                        <p class="text-xs text-slate-500">Órdenes de interconsulta emitidas por tus médicos para atención especializada</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Referencia Activa -->
+                        <div class="p-6 rounded-3xl bg-docbg border-2 border-docteal/40 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-extrabold">Referencia Activa • #REF-204</span>
+                                <span class="text-xs font-bold text-slate-500">15 Oct 2026</span>
+                            </div>
+
+                            <div>
+                                <p class="text-xs font-bold text-docteal uppercase">Especialidad Destino</p>
+                                <h4 class="text-xl font-black text-docblue">Cardiología Preventiva</h4>
+                                <p class="text-xs text-slate-600 mt-1"><strong>Médico que refiere:</strong> Dr. Alejandro Mendoza (Medicina Interna)</p>
+                            </div>
+
+                            <div class="p-3.5 rounded-2xl bg-white border border-slate-200 text-xs text-slate-600 space-y-1">
+                                <p class="font-bold text-docblue">Motivo de la Referencia:</p>
+                                <p>Evaluación cardiológica preventiva por antecedentes familiares y episodios ocasionales de fatiga al esfuerzo moderado.</p>
+                            </div>
+
+                            <div class="pt-2 flex flex-wrap gap-2">
+                                <button onclick="openNewAppointmentModal('Cardiología')" class="flex-1 py-2.5 bg-gradient-accent text-white font-bold rounded-xl text-xs hover:from-docblue hover:to-docteal transition-all">
+                                    Agendar con Especialista
+                                </button>
+                                <button onclick="showToast('Descargando hoja de referencia médica #REF-204...')" class="px-4 py-2.5 bg-white border border-slate-200 text-docblue font-bold rounded-xl text-xs hover:bg-slate-50">
+                                    PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Referencia Completada -->
+                        <div class="p-6 rounded-3xl bg-docbg border border-slate-200/80 space-y-4 opacity-85">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full bg-slate-200 text-slate-700 text-xs font-bold">Completada • #REF-118</span>
+                                <span class="text-xs font-bold text-slate-500">05 Feb 2026</span>
+                            </div>
+
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase">Especialidad Destino</p>
+                                <h4 class="text-xl font-black text-docblue">Dermatología Clínica</h4>
+                                <p class="text-xs text-slate-600 mt-1"><strong>Médico que refiere:</strong> Dra. Elena Ramos (Medicina General)</p>
+                            </div>
+
+                            <div class="p-3.5 rounded-2xl bg-white border border-slate-200 text-xs text-slate-600 space-y-1">
+                                <p class="font-bold text-docblue">Motivo de la Referencia:</p>
+                                <p>Valoración de dermatitis localizada en extremidad superior derecha. Atendida el 19 Feb 2026 por Dra. Lucía Morales.</p>
+                            </div>
+
+                            <div class="pt-2">
+                                <button onclick="showToast('Descargando comprobante de referencia #REF-118...')" class="w-full py-2.5 bg-white border border-slate-200 text-docblue font-bold rounded-xl text-xs hover:bg-slate-50">
+                                    Descargar Constancia PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ================= MODAL: AGENDAR NUEVA CITA ================= -->
+    <div id="appointmentModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative space-y-4">
+            <button onclick="closeModal('appointmentModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-xl font-black text-docblue">Agendar Nueva Consulta</h3>
+            <form onsubmit="handleBookAppointment(event)" class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-700 uppercase">Especialidad</label>
+                    <select id="bookSpec" class="mt-1 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold">
+                        <option value="Medicina General">Medicina General</option>
+                        <option value="Cardiología">Cardiología</option>
+                        <option value="Pediatría">Pediatría</option>
+                        <option value="Dermatología">Dermatología</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700 uppercase">Modalidad</label>
+                    <select id="bookMode" class="mt-1 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold">
+                        <option value="Teleconsulta HD">Teleconsulta Virtual HD</option>
+                        <option value="Presencial">Presencial en Clínica</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 uppercase">Fecha</label>
+                        <input type="date" id="bookDate" value="2026-11-25" required class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 uppercase">Hora</label>
+                        <select id="bookTime" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold">
+                            <option value="09:00 AM">09:00 AM</option>
+                            <option value="11:00 AM">11:00 AM</option>
+                            <option value="03:30 PM">03:30 PM</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 bg-gradient-accent text-white font-extrabold rounded-xl text-sm shadow-md">
+                    Confirmar Cita
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: SUBIR NUEVO EXAMEN ================= -->
+    <div id="uploadExamModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative space-y-4">
+            <button onclick="closeModal('uploadExamModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-xl font-black text-docblue">Subir Resultado de Examen</h3>
+            <form onsubmit="handleUploadExam(event)" class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-700 uppercase">Nombre del Estudio</label>
+                    <input type="text" id="examTitleInput" placeholder="Ej. Química Sanguínea / Rayos X" required class="mt-1 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700 uppercase">Laboratorio o Clínica</label>
+                    <input type="text" id="examLabInput" placeholder="Ej. Laboratorio Clínico Central" required class="mt-1 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700 uppercase">Archivo PDF o Imagen</label>
+                    <input type="file" accept=".pdf,.png,.jpg,.jpeg" required class="mt-1 w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:font-bold file:bg-docblue/10 file:text-docblue">
+                </div>
+                <button type="submit" class="w-full py-3 bg-docblue hover:bg-docteal text-white font-extrabold rounded-xl text-sm">
+                    Guardar en Mi Expediente
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: VER RESULTADO DE EXAMEN ================= -->
+    <div id="examDetailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative space-y-4">
+            <button onclick="closeModal('examDetailModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <span class="text-xs font-bold text-docteal uppercase">Informe de Laboratorio</span>
+            <h3 id="examModalTitle" class="text-xl font-black text-docblue">Estudio</h3>
+            <p id="examModalDate" class="text-xs text-slate-500 font-semibold">Fecha</p>
+            <div id="examModalBody" class="p-4 rounded-2xl bg-docbg border border-slate-200 text-sm text-slate-700 leading-relaxed"></div>
+            <div class="flex justify-end">
+                <button onclick="closeModal('examDetailModal')" class="px-5 py-2.5 bg-docblue text-white text-xs font-bold rounded-xl">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: FICHA MÉDICA DE EMERGENCIA ================= -->
+    <div id="emergencyModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-2 border-red-200 relative space-y-4">
+            <button onclick="closeModal('emergencyModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center gap-2 text-red-600 font-extrabold text-xs uppercase">
+                <i data-lucide="alert-circle" class="w-4 h-4"></i> Tarjeta Vital de Emergencia
+            </div>
+            <h3 class="text-xl font-black text-docblue">María Fernanda Rivas</h3>
+            <div class="space-y-2 text-xs bg-docbg p-4 rounded-2xl border border-slate-200">
+                <p><strong>ID Expediente:</strong> #DOC-8941</p>
+                <p><strong>Grupo Sanguíneo:</strong> <span class="text-red-600 font-black">O Positivo (O+)</span></p>
+                <p><strong>Alergias Críticas:</strong> <span class="text-red-600 font-bold">Penicilina</span></p>
+                <p><strong>Contacto de Emergencia:</strong> Carlos Rivas (Padre) • +503 7710-2290</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TOAST NOTIFICATION ================= -->
+    <div id="toastBox" class="fixed bottom-5 right-5 z-50 hidden bg-docblue text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-doccyan/40 text-xs font-bold flex items-center gap-2.5">
+        <i data-lucide="check-circle-2" class="w-4 h-4 text-doccyan"></i>
+        <span id="toastMessage">Acción completada</span>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        lucide.createIcons();
+
+        // Condiciones declaradas por el paciente en su anexo
+        let patientConditions = [
+            {
+                category: 'Alergia a Medicamento o Alimento',
+                name: 'Alergia a la Penicilina',
+                year: '2018',
+                status: 'Activa / En tratamiento',
+                notes: 'Produce erupción cutánea severa. Evitar derivados betalactámicos.'
+            },
+            {
+                category: 'Enfermedad Crónica / Diagnosticada',
+                name: 'Rinitis Alérgica Estacional',
+                year: '2022',
+                status: 'Controlada',
+                notes: 'Se intensifica en cambios de clima; tratada con Loratadina según necesidad.'
+            },
+            {
+                category: 'Cirugía u Hospitalización Previa',
+                name: 'Apendicectomía Laparoscópica',
+                year: '2020',
+                status: 'Superada / Antecedente',
+                notes: 'Cirugía sin complicaciones en Hospital Nacional.'
+            }
+        ];
+
+        function renderConditions() {
+            const container = document.getElementById('patientConditionsList');
+            document.getElementById('conditionsCounter').textContent = `${patientConditions.length} Registros`;
+            container.innerHTML = '';
+
+            patientConditions.forEach((item, index) => {
+                const isAllergy = item.category.includes('Alergia');
+                const badgeClass = isAllergy ? 'bg-red-100 text-red-700' : 'bg-docteal/10 text-docteal';
+
+                const div = document.createElement('div');
+                div.className = "p-4 rounded-2xl bg-docbg border border-slate-200/80 space-y-1.5 relative";
+                div.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2 pr-6">
+                        <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full ${badgeClass}">${item.category}</span>
+                        <span class="text-[11px] font-bold text-slate-500">Desde ${item.year} • ${item.status}</span>
+                    </div>
+                    <h4 class="font-bold text-docblue text-base">${item.name}</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">${item.notes || 'Sin observaciones adicionales.'}</p>
+                    <button onclick="removeCondition(${index})" title="Eliminar registro" class="absolute top-4 right-4 text-slate-400 hover:text-red-500">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function addHealthCondition(e) {
+            e.preventDefault();
+            const category = document.getElementById('condCategory').value;
+            const name = document.getElementById('condName').value;
+            const year = document.getElementById('condYear').value;
+            const status = document.getElementById('condStatus').value;
+            const notes = document.getElementById('condNotes').value;
+
+            patientConditions.unshift({ category, name, year, status, notes });
+            renderConditions();
+            e.target.reset();
+            showToast('Registro añadido a tu anexo de salud y sincronizado con tu expediente.');
+        }
+
+        function removeCondition(index) {
+            patientConditions.splice(index, 1);
+            renderConditions();
+            showToast('Registro eliminado del anexo.');
+        }
+
+        // Navegación entre secciones
+        function switchSection(sectionName) {
+            const sections = ['resumen', 'historial', 'anexo', 'recetas', 'examenes', 'referencias'];
+            const titles = {
+                resumen: 'Mi Portal de Salud',
+                historial: 'Historial Clínico Unificado',
+                anexo: 'Anexo Personal de Enfermedades',
+                recetas: 'Mis Recetas Médicas Digitales',
+                examenes: 'Exámenes y Resultados de Laboratorio',
+                referencias: 'Referencias Médicas a Especialistas'
+            };
+
+            sections.forEach(sec => {
+                document.getElementById(`sec-${sec}`).classList.add('hidden');
+            });
+            document.getElementById(`sec-${sectionName}`).classList.remove('hidden');
+            document.getElementById('pageTitle').textContent = titles[sectionName];
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.nav === sectionName) {
+                    btn.className = "nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-docteal text-white shadow-md transition-all";
+                } else {
+                    btn.className = "nav-btn w-full flex items-center justify-between px-4 py-3 rounded-xl text-slate-300 hover:bg-white/10 hover:text-white transition-all";
+                }
+            });
+
+            if (sectionName === 'anexo') {
+                renderConditions();
+            }
+
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        // Modales
+        function openNewAppointmentModal(spec) {
+            if (spec) document.getElementById('bookSpec').value = spec;
+            document.getElementById('appointmentModal').classList.remove('hidden');
+        }
+
+        function handleBookAppointment(e) {
+            e.preventDefault();
+            const spec = document.getElementById('bookSpec').value;
+            const mode = document.getElementById('bookMode').value;
+            const date = document.getElementById('bookDate').value;
+            const time = document.getElementById('bookTime').value;
+
+            const container = document.getElementById('appointmentsContainer');
+            const div = document.createElement('div');
+            div.className = "p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-emerald-50/40";
+            div.innerHTML = `
+                <div class="flex items-start gap-4">
+                    <div class="px-3 py-2 rounded-xl bg-docteal text-white text-center shrink-0">
+                        <p class="text-xs font-bold">${date}</p>
+                        <p class="text-[10px] font-bold">${time}</p>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-bold text-docblue text-base">Especialista en ${spec}</h4>
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-docteal/10 text-docteal">${mode}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5">Cita recién programada desde tu portal</p>
+                    </div>
+                </div>
+                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full self-start sm:self-center">Confirmada</span>
+            `;
+            container.prepend(div);
+            closeModal('appointmentModal');
+            switchSection('resumen');
+            showToast('¡Cita médica agendada correctamente!');
+        }
+
+        function openUploadExamModal() {
+            document.getElementById('uploadExamModal').classList.remove('hidden');
+        }
+
+        function handleUploadExam(e) {
+            e.preventDefault();
+            const title = document.getElementById('examTitleInput').value;
+            const lab = document.getElementById('examLabInput').value;
+            const tbody = document.getElementById('patientExamsTable');
+
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-50 bg-doccyan/5";
+            tr.innerHTML = `
+                <td class="py-4 px-6 font-bold text-docblue">${title}</td>
+                <td class="py-4 px-6 text-xs text-slate-600">${lab}</td>
+                <td class="py-4 px-6 text-xs text-slate-500">20 Nov 2026</td>
+                <td class="py-4 px-6"><span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">Pendiente de revisión médica</span></td>
+                <td class="py-4 px-6 text-right">
+                    <button onclick="openExamDetailModal('${title}', '20 Nov 2026', 'Archivo subido por el paciente (${lab}). Disponible para revisión del médico en consulta.')" class="px-3 py-1.5 bg-docblue text-white rounded-lg text-xs font-bold">Ver Archivo</button>
+                </td>
+            `;
+            tbody.prepend(tr);
+            e.target.reset();
+            closeModal('uploadExamModal');
+            showToast('Examen subido y compartido con tu médico.');
+        }
+
+        function openExamDetailModal(title, date, body) {
+            document.getElementById('examModalTitle').textContent = title;
+            document.getElementById('examModalDate').textContent = `Fecha de estudio: ${date}`;
+            document.getElementById('examModalBody').textContent = body;
+            document.getElementById('examDetailModal').classList.remove('hidden');
+        }
+
+        function openEmergencyCardModal() {
+            document.getElementById('emergencyModal').classList.remove('hidden');
+        }
+
+        function openTeleconsultRoom() {
+            showToast('Conectando a sala encriptada AES-256 con Dr. Alejandro Mendoza...');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function showToast(msg) {
+            const box = document.getElementById('toastBox');
+            document.getElementById('toastMessage').textContent = msg;
+            box.classList.remove('hidden');
+            setTimeout(() => box.classList.add('hidden'), 3200);
+        }
+
+        // Inicializar anexo
+        renderConditions();
+    </script>
+</body>
+</html>
