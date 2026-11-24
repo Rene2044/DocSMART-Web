@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasarela de Pago | Planes y Tarjetas de Crédito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top left, #e0f2fe 0%, #f8fafc 45%, #f1f5f9 100%);
+        }
+        .card-visa {
+            background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 60%, #0284c7 100%);
+        }
+        .card-mastercard {
+            background: linear-gradient(135deg, #18181b 0%, #7f1d1d 55%, #ea580c 100%);
+        }
+        .card-amex {
+            background: linear-gradient(135deg, #064e3b 0%, #047857 55%, #0d9488 100%);
+        }
+        .card-discover {
+            background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 55%, #d97706 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 py-8 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Encabezado -->
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="space-y-2">
+                <button type="button" id="btnRegresar" onclick="regresarPaginaAnterior()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200 text-xs font-bold shadow-xs transition-all cursor-pointer">
+                    <span>←</span>
+                    <span>Regresar</span>
+                </button>
+
+                <div>
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                        🔒 Pago Seguro SSL 256-bit
+                    </span>
+                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2">Finalizar Pago con Tarjeta</h1>
+                    <p class="text-sm text-slate-500">Elige tu plan, selecciona la marca de tu tarjeta y completa los datos.</p>
+                </div>
+            </div>
+
+            <div class="text-left sm:text-right bg-white px-4 py-3 rounded-2xl border border-slate-200 shadow-xs self-start sm:self-center">
+                <p class="text-xs font-semibold text-slate-400 uppercase">Total a pagar</p>
+                <p id="headerTotal" class="text-2xl font-black text-slate-900">$49.00 <span class="text-xs font-semibold text-slate-500">USD</span></p>
+            </div>
+        </div>
+
+        <!-- Selector de 4 Planes -->
+        <div class="mb-8 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-4">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    1. Selecciona un plan disponible
+                </h2>
+                <span class="text-xs text-slate-400">Todos los planes incluyen facturación transparente sin cargos ocultos</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5" id="planSelector">
+                <button type="button" data-plan="individual" onclick="selectPlan('individual')" class="plan-option text-left p-4 rounded-2xl border-2 border-blue-600 bg-blue-50/70 transition-all cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold uppercase tracking-wide text-blue-700">Plan Individual</span>
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">1 persona</span>
+                    </div>
+                    <p class="text-2xl font-black text-slate-900 mt-2">$49.00 <span class="text-xs font-semibold text-slate-500">USD</span></p>
+                    <p class="text-xs text-slate-500 mt-1">Acceso completo para un usuario al mes.</p>
+                </button>
+
+                <button type="button" data-plan="parejas" onclick="selectPlan('parejas')" class="plan-option text-left p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition-all cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold uppercase tracking-wide text-slate-700">Plan de Parejas</span>
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">2 personas</span>
+                    </div>
+                    <p class="text-2xl font-black text-slate-900 mt-2">$89.00 <span class="text-xs font-semibold text-slate-500">USD</span></p>
+                    <p class="text-xs text-slate-500 mt-1">Dos cuentas vinculadas con beneficios compartidos.</p>
+                </button>
+
+                <button type="button" data-plan="familia" onclick="selectPlan('familia')" class="plan-option text-left p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition-all cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold uppercase tracking-wide text-slate-700">Plan de Familia</span>
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">Hasta 5</span>
+                    </div>
+                    <p class="text-2xl font-black text-slate-900 mt-2">$129.00 <span class="text-xs font-semibold text-slate-500">USD</span></p>
+                    <p class="text-xs text-slate-500 mt-1">Cobertura grupal para hasta 5 integrantes del hogar.</p>
+                </button>
+
+                <button type="button" data-plan="anual" onclick="selectPlan('anual')" class="plan-option text-left p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition-all cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold uppercase tracking-wide text-slate-700">Plan Anual</span>
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">12 meses</span>
+                    </div>
+                    <p class="text-2xl font-black text-slate-900 mt-2">$149.00 <span class="text-xs font-semibold text-slate-500">USD</span></p>
+                    <p class="text-xs text-slate-500 mt-1">Pago único por todo el año con tarifa preferencial.</p>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+
+            <!-- Columna Izquierda: Tarjeta Visual + Resumen -->
+            <div class="lg:col-span-5 space-y-6">
+                <!-- Tarjeta Interactiva -->
+                <div id="virtualCard" class="card-visa rounded-3xl p-6 text-white shadow-xl transition-all duration-300 relative overflow-hidden min-h-[215px] flex flex-col justify-between">
+                    <div class="flex items-center justify-between">
+                        <div class="w-11 h-8 rounded-md bg-amber-300/90 border border-amber-100/60 flex items-center justify-center">
+                            <div class="w-7 h-5 border border-amber-700/40 rounded-xs"></div>
+                        </div>
+                        <span id="cardBrandBadge" class="text-sm font-black tracking-widest uppercase px-3 py-1 rounded-lg bg-white/15 backdrop-blur-xs">
+                            VISA
+                        </span>
+                    </div>
+
+                    <div class="my-5">
+                        <p class="text-[11px] uppercase tracking-wider text-white/70 mb-1">Número de tarjeta</p>
+                        <p id="previewNumber" class="text-lg sm:text-xl font-bold tracking-[0.18em] font-mono">
+                            •••• •••• •••• 4242
+                        </p>
+                    </div>
+
+                    <div class="flex items-end justify-between text-xs">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider text-white/65">Titular</p>
+                            <p id="previewHolder" class="font-bold uppercase tracking-wide text-sm mt-0.5">
+                                NOMBRE DEL TITULAR
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] uppercase tracking-wider text-white/65">Vence</p>
+                            <p id="previewExpiry" class="font-bold font-mono text-sm mt-0.5">MM/AA</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] uppercase tracking-wider text-white/65">CVV</p>
+                            <p id="previewCvv" class="font-bold font-mono text-sm mt-0.5">•••</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen del Pedido -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                    <h2 class="text-base font-bold text-slate-900">Resumen del pedido</h2>
+                    <div class="space-y-2.5 text-sm border-b border-slate-100 pb-4">
+                        <div class="flex justify-between text-slate-600">
+                            <span id="summaryPlanName">Plan Individual</span>
+                            <span id="summaryPlanPrice" class="font-semibold text-slate-800">$49.00</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600">
+                            <span id="summaryPlanBilling">Cobertura: 1 persona</span>
+                            <span class="font-semibold text-slate-800">Incluido</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600">
+                            <span>Comisión de procesamiento</span>
+                            <span class="font-semibold text-emerald-600">Gratis</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <span class="font-bold text-slate-900">Total final</span>
+                        <span id="summaryTotal" class="text-xl font-black text-slate-900">$49.00 USD</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Formulario de Pago -->
+            <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+                <form id="paymentForm" onsubmit="handlePayment(event)" class="space-y-6">
+
+                    <!-- Selector de Marca de Tarjeta -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+                            2. Selecciona la marca de tu tarjeta
+                        </label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="brandSelector">
+                            <button type="button" data-brand="visa" onclick="selectBrand('visa')" class="brand-option flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 text-blue-900 transition-all cursor-pointer">
+                                <span class="text-base font-black italic tracking-tight">VISA</span>
+                                <span class="text-[11px] font-medium text-slate-500 mt-0.5">Crédito / Débito</span>
+                            </button>
+
+                            <button type="button" data-brand="mastercard" onclick="selectBrand('mastercard')" class="brand-option flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 hover:border-slate-300 transition-all cursor-pointer">
+                                <span class="flex items-center -space-x-1.5 mb-0.5">
+                                    <span class="w-4 h-4 rounded-full bg-red-600 inline-block"></span>
+                                    <span class="w-4 h-4 rounded-full bg-amber-500 inline-block opacity-90"></span>
+                                </span>
+                                <span class="text-xs font-extrabold">Mastercard</span>
+                            </button>
+
+                            <button type="button" data-brand="amex" onclick="selectBrand('amex')" class="brand-option flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 hover:border-slate-300 transition-all cursor-pointer">
+                                <span class="text-xs font-black tracking-tight uppercase">Amex</span>
+                                <span class="text-[11px] font-medium text-slate-500 mt-0.5">American Express</span>
+                            </button>
+
+                            <button type="button" data-brand="discover" onclick="selectBrand('discover')" class="brand-option flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 hover:border-slate-300 transition-all cursor-pointer">
+                                <span class="text-xs font-black tracking-wider uppercase">Discover</span>
+                                <span class="text-[11px] font-medium text-slate-500 mt-0.5">Red global</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Nombre del Titular -->
+                    <div>
+                        <label for="cardHolder" class="block text-xs font-bold text-slate-700 mb-1.5">
+                            Nombre como figura en la tarjeta
+                        </label>
+                        <input type="text" id="cardHolder" required oninput="updateCardPreview()" placeholder="Ej. René Oswaldo Orellana" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:border-blue-600 text-sm font-medium">
+                    </div>
+
+                    <!-- Número de Tarjeta -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="cardNumber" class="block text-xs font-bold text-slate-700">
+                                Número de tarjeta
+                            </label>
+                            <span id="detectedBrandHint" class="text-[11px] font-semibold text-blue-700">
+                                Marca seleccionada: VISA
+                            </span>
+                        </div>
+                        <input type="text" id="cardNumber" required inputmode="numeric" maxlength="19" oninput="formatAndPreviewCardNumber(this)" placeholder="1234 5678 9012 3456" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:border-blue-600 text-sm font-mono font-semibold tracking-wider">
+                    </div>
+
+                    <!-- Vencimiento y CVV -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="cardExpiry" class="block text-xs font-bold text-slate-700 mb-1.5">
+                                Fecha de vencimiento
+                            </label>
+                            <input type="text" id="cardExpiry" required inputmode="numeric" maxlength="5" oninput="formatExpiry(this)" placeholder="MM/AA" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:border-blue-600 text-sm font-mono font-semibold">
+                        </div>
+                        <div>
+                            <label for="cardCvv" class="block text-xs font-bold text-slate-700 mb-1.5">
+                                Código de seguridad (CVV)
+                            </label>
+                            <input type="password" id="cardCvv" required inputmode="numeric" maxlength="4" oninput="updateCardPreview()" placeholder="123" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:border-blue-600 text-sm font-mono font-semibold">
+                        </div>
+                    </div>
+
+                    <!-- Correo para Recibo -->
+                    <div>
+                        <label for="billingEmail" class="block text-xs font-bold text-slate-700 mb-1.5">
+                            Correo electrónico para enviar comprobante
+                        </label>
+                        <input type="email" id="billingEmail" required placeholder="correo@ejemplo.com" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:border-blue-600 text-sm">
+                    </div>
+
+                    <!-- Alerta de Validación -->
+                    <div id="paymentError" class="hidden p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs font-semibold"></div>
+
+                    <!-- Botón Enviar -->
+                    <button type="submit" id="submitBtn" class="w-full py-3.5 px-6 rounded-2xl bg-slate-900 hover:bg-blue-700 text-white font-extrabold text-sm shadow-lg transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+                        Pagar $49.00 USD ahora
+                    </button>
+
+                    <!-- Mensaje de Confirmación -->
+                    <div id="paymentStatus" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm">
+                        <p class="font-bold">¡Pago procesado con éxito!</p>
+                        <p id="paymentDetails" class="text-xs mt-1 text-emerald-800"></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PLANS = {
+            individual: {
+                name: 'Plan Individual',
+                price: 49,
+                billing: 'Cobertura: 1 persona (mensual)'
+            },
+            parejas: {
+                name: 'Plan de Parejas',
+                price: 89,
+                billing: 'Cobertura: 2 personas (mensual)'
+            },
+            familia: {
+                name: 'Plan de Familia',
+                price: 129,
+                billing: 'Cobertura: hasta 5 personas (mensual)'
+            },
+            anual: {
+                name: 'Plan Anual',
+                price: 149,
+                billing: 'Cobertura: 12 meses (pago anual)'
+            }
+        };
+
+        const BRAND_CONFIG = {
+            visa: {
+                label: 'VISA',
+                cardClass: 'card-visa',
+                cardLength: 16,
+                cvvLength: 3
+            },
+            mastercard: {
+                label: 'MASTERCARD',
+                cardClass: 'card-mastercard',
+                cardLength: 16,
+                cvvLength: 3
+            },
+            amex: {
+                label: 'AMEX',
+                cardClass: 'card-amex',
+                cardLength: 15,
+                cvvLength: 4
+            },
+            discover: {
+                label: 'DISCOVER',
+                cardClass: 'card-discover',
+                cardLength: 16,
+                cvvLength: 3
+            }
+        };
+
+        let currentPlan = 'individual';
+        let currentBrand = 'visa';
+
+        function isDoctorSession() {
+            try {
+                const rawUser = localStorage.getItem('usuario') || sessionStorage.getItem('usuario');
+                if (!rawUser || rawUser === 'null' || rawUser === 'undefined') return false;
+                const parsed = JSON.parse(rawUser);
+                const role = String(parsed?.rol || parsed?.role || '').toLowerCase().trim();
+                return role === 'doctor' || role === 'medico' || role === 'médico';
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function guardPatientOnlyAccess() {
+            if (isDoctorSession()) {
+                window.location.replace('doctor-dashboard.html');
+                return false;
+            }
+            return true;
+        }
+
+        function regresarPaginaAnterior() {
+            if (isDoctorSession()) {
+                window.location.replace('doctor-dashboard.html');
+                return;
+            }
+
+            const ref = document.referrer || '';
+            const mismaOrigen = ref && ref.startsWith(window.location.origin) && !ref.endsWith('/pago.html');
+
+            if (mismaOrigen && window.history.length > 1) {
+                window.history.back();
+                return;
+            }
+            window.location.href = 'index.html';
+        }
+
+        function formatUSD(amount) {
+            const num = Number(amount);
+            return `$${(Number.isFinite(num) ? num : 0).toFixed(2)}`;
+        }
+
+        function showError(message) {
+            const errBox = document.getElementById('paymentError');
+            const okBox = document.getElementById('paymentStatus');
+            if (okBox) okBox.classList.add('hidden');
+            if (!errBox) return;
+            errBox.textContent = message;
+            errBox.classList.remove('hidden');
+        }
+
+        function clearMessages() {
+            const errBox = document.getElementById('paymentError');
+            if (errBox) {
+                errBox.textContent = '';
+                errBox.classList.add('hidden');
+            }
+        }
+
+        function selectPlan(planKey) {
+            if (!PLANS[planKey]) return;
+            currentPlan = planKey;
+            clearMessages();
+
+            const plan = PLANS[planKey];
+            const formatted = formatUSD(plan.price);
+
+            const headerTotal = document.getElementById('headerTotal');
+            const summaryPlanName = document.getElementById('summaryPlanName');
+            const summaryPlanPrice = document.getElementById('summaryPlanPrice');
+            const summaryPlanBilling = document.getElementById('summaryPlanBilling');
+            const summaryTotal = document.getElementById('summaryTotal');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (headerTotal) headerTotal.innerHTML = `${formatted} <span class="text-xs font-semibold text-slate-500">USD</span>`;
+            if (summaryPlanName) summaryPlanName.textContent = plan.name;
+            if (summaryPlanPrice) summaryPlanPrice.textContent = formatted;
+            if (summaryPlanBilling) summaryPlanBilling.textContent = plan.billing;
+            if (summaryTotal) summaryTotal.textContent = `${formatted} USD`;
+            if (submitBtn) submitBtn.textContent = `Pagar ${formatted} USD ahora`;
+
+            document.querySelectorAll('.plan-option').forEach(btn => {
+                const active = btn.dataset.plan === planKey;
+                btn.className = active
+                    ? 'plan-option text-left p-4 rounded-2xl border-2 border-blue-600 bg-blue-50/70 transition-all cursor-pointer'
+                    : 'plan-option text-left p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition-all cursor-pointer';
+
+                const titleEl = btn.querySelector('span');
+                if (titleEl) {
+                    titleEl.className = active
+                        ? 'text-xs font-extrabold uppercase tracking-wide text-blue-700'
+                        : 'text-xs font-extrabold uppercase tracking-wide text-slate-700';
+                }
+            });
+        }
+
+        function selectBrand(brand) {
+            if (!BRAND_CONFIG[brand]) return;
+            currentBrand = brand;
+            clearMessages();
+
+            const cfg = BRAND_CONFIG[brand];
+            const cardEl = document.getElementById('virtualCard');
+            if (cardEl) {
+                cardEl.className = `${cfg.cardClass} rounded-3xl p-6 text-white shadow-xl transition-all duration-300 relative overflow-hidden min-h-[215px] flex flex-col justify-between`;
+            }
+
+            const badge = document.getElementById('cardBrandBadge');
+            const hint = document.getElementById('detectedBrandHint');
+            if (badge) badge.textContent = cfg.label;
+            if (hint) hint.textContent = `Marca seleccionada: ${cfg.label}`;
+
+            const numInput = document.getElementById('cardNumber');
+            if (numInput) {
+                const digits = numInput.value.replace(/\D/g, '').slice(0, cfg.cardLength);
+                numInput.maxLength = cfg.cardLength + 3;
+                const grouped = digits.match(/.{1,4}/g) || [];
+                numInput.value = grouped.join(' ');
+            }
+
+            const cvvInput = document.getElementById('cardCvv');
+            if (cvvInput) {
+                cvvInput.maxLength = cfg.cvvLength;
+                cvvInput.placeholder = cfg.cvvLength === 4 ? '1234' : '123';
+                if (cvvInput.value.length > cfg.cvvLength) {
+                    cvvInput.value = cvvInput.value.slice(0, cfg.cvvLength);
+                }
+            }
+
+            document.querySelectorAll('.brand-option').forEach(btn => {
+                const active = btn.dataset.brand === brand;
+                btn.className = active
+                    ? 'brand-option flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 text-blue-900 transition-all cursor-pointer'
+                    : 'brand-option flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 hover:border-slate-300 transition-all cursor-pointer';
+            });
+
+            updateCardPreview();
+        }
+
+        function detectBrandFromDigits(digits) {
+            if (/^4/.test(digits)) return 'visa';
+            if (/^(5[1-5]|2[2-7])/.test(digits)) return 'mastercard';
+            if (/^3[47]/.test(digits)) return 'amex';
+            if (/^(6011|65|64[4-9])/.test(digits)) return 'discover';
+            return null;
+        }
+
+        function formatAndPreviewCardNumber(input) {
+            if (!input) return;
+            const raw = input.value.replace(/\D/g, '');
+            const autoBrand = detectBrandFromDigits(raw);
+            const targetBrand = autoBrand || currentBrand;
+            const maxLen = BRAND_CONFIG[targetBrand]?.cardLength || 16;
+            const digits = raw.slice(0, maxLen);
+
+            if (autoBrand && autoBrand !== currentBrand) {
+                selectBrand(autoBrand);
+            }
+
+            const grouped = digits.match(/.{1,4}/g) || [];
+            input.value = grouped.join(' ');
+            updateCardPreview();
+        }
+
+        function formatExpiry(input) {
+            if (!input) return;
+            let digits = input.value.replace(/\D/g, '').slice(0, 4);
+            if (digits.length >= 2) {
+                let month = parseInt(digits.slice(0, 2), 10);
+                if (!Number.isFinite(month) || month < 1) month = 1;
+                if (month > 12) month = 12;
+                digits = String(month).padStart(2, '0') + digits.slice(2);
+            }
+            input.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+            updateCardPreview();
+        }
+
+        function isExpiryValid(expiryStr) {
+            const match = /^(\d{2})\/(\d{2})$/.exec(expiryStr || '');
+            if (!match) return false;
+
+            const month = parseInt(match[1], 10);
+            const yearTwoDigits = parseInt(match[2], 10);
+            if (month < 1 || month > 12) return false;
+
+            const now = new Date();
+            const currentYear = now.getFullYear() % 100;
+            const currentMonth = now.getMonth() + 1;
+
+            if (yearTwoDigits < currentYear) return false;
+            if (yearTwoDigits === currentYear && month < currentMonth) return false;
+            return true;
+        }
+
+        function updateCardPreview() {
+            const holderEl = document.getElementById('cardHolder');
+            const numEl = document.getElementById('cardNumber');
+            const expEl = document.getElementById('cardExpiry');
+            const cvvEl = document.getElementById('cardCvv');
+
+            const holder = (holderEl?.value || '').trim();
+            const rawDigits = (numEl?.value || '').replace(/\D/g, '');
+            const expiry = (expEl?.value || '').trim();
+            const cvv = (cvvEl?.value || '').trim();
+
+            const prevHolder = document.getElementById('previewHolder');
+            const prevExpiry = document.getElementById('previewExpiry');
+            const prevCvv = document.getElementById('previewCvv');
+            const prevNumber = document.getElementById('previewNumber');
+
+            if (prevHolder) prevHolder.textContent = holder || 'NOMBRE DEL TITULAR';
+            if (prevExpiry) prevExpiry.textContent = expiry || 'MM/AA';
+            if (prevCvv) prevCvv.textContent = cvv ? '•'.repeat(cvv.length) : '•••';
+
+            if (!prevNumber) return;
+            if (!rawDigits) {
+                prevNumber.textContent = '•••• •••• •••• 4242';
+                return;
+            }
+
+            const lastFour = rawDigits.slice(-4);
+            prevNumber.textContent = rawDigits.length >= 4
+                ? `•••• •••• •••• ${lastFour}`
+                : rawDigits;
+        }
+
+        function hydrateSavedPlan() {
+            try {
+                const saved = (localStorage.getItem('suscripcion_plan') || '').toLowerCase();
+                if (saved.includes('pareja')) return selectPlan('parejas');
+                if (saved.includes('familia')) return selectPlan('familia');
+                if (saved.includes('anual')) return selectPlan('anual');
+                selectPlan('individual');
+            } catch (_) {
+                selectPlan('individual');
+            }
+        }
+
+        function handlePayment(event) {
+            event.preventDefault();
+            if (!guardPatientOnlyAccess()) return;
+            clearMessages();
+
+            const plan = PLANS[currentPlan] || PLANS.individual;
+            const brandCfg = BRAND_CONFIG[currentBrand] || BRAND_CONFIG.visa;
+
+            const holder = (document.getElementById('cardHolder')?.value || '').trim();
+            const digits = (document.getElementById('cardNumber')?.value || '').replace(/\D/g, '');
+            const expiry = (document.getElementById('cardExpiry')?.value || '').trim();
+            const cvv = (document.getElementById('cardCvv')?.value || '').trim();
+            const email = (document.getElementById('billingEmail')?.value || '').trim();
+
+            if (holder.length < 2) {
+                return showError('Ingresa el nombre del titular tal como figura en la tarjeta.');
+            }
+            if (digits.length !== brandCfg.cardLength) {
+                return showError(`El número de tarjeta para ${brandCfg.label} debe tener ${brandCfg.cardLength} dígitos.`);
+            }
+            if (!isExpiryValid(expiry)) {
+                return showError('Ingresa una fecha de vencimiento válida y vigente (MM/AA).');
+            }
+            if (!new RegExp(`^\\d{${brandCfg.cvvLength}}$`).test(cvv)) {
+                return showError(`El código CVV para ${brandCfg.label} debe tener ${brandCfg.cvvLength} dígitos.`);
+            }
+            if (!email || !email.includes('@')) {
+                return showError('Ingresa un correo electrónico válido para el comprobante.');
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) submitBtn.disabled = true;
+
+            try {
+                const formattedAmount = formatUSD(plan.price);
+                const last4 = digits.slice(-4);
+
+                localStorage.setItem('suscripcion_plan', `${plan.name} (${formattedAmount} USD)`);
+
+                const statusBox = document.getElementById('paymentStatus');
+                const detailsEl = document.getElementById('paymentDetails');
+                if (statusBox) statusBox.classList.remove('hidden');
+                if (detailsEl) {
+                    detailsEl.textContent = `Cargo de ${formattedAmount} USD (${plan.name}) registrado con ${brandCfg.label} terminada en •••• ${last4} a nombre de ${holder}. Recibo enviado a ${email}.`;
+                }
+            } finally {
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!guardPatientOnlyAccess()) return;
+            hydrateSavedPlan();
+            selectBrand('visa');
+            updateCardPreview();
+        });
+    </script>
+</body>
+</html>
